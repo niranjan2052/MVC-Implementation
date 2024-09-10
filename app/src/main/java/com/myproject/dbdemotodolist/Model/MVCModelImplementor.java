@@ -32,6 +32,20 @@ public class MVCModelImplementor implements IMVCModel {
 //        }
 //    }
 
+    public ToDo getToDo(long id) throws Exception{
+        ToDo toDo = null;
+        for(ToDo toDo1: toDoItems){
+            if(toDo1.getId()==id){
+                toDo = toDo1;
+                break;
+            }
+        }
+        if(toDo==null){
+            throw new ToDoNotFoundException("Id is wrong");
+        }
+        return toDo;
+    }
+
     private void refresh() {
         toDoItems.clear();
         toDoItems = this.toDoListDBAdapter.getAllToDos();

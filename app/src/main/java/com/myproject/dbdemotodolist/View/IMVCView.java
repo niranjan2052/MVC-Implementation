@@ -5,4 +5,5 @@ import android.view.View;
 public interface IMVCView {
     View getRootView();
     void initViews();
+    void bindDataToView();
 }

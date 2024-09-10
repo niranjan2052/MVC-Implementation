@@ -1,6 +1,7 @@
 package com.myproject.dbdemotodolist.View;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.myproject.dbdemotodolist.Controller.MVCController;
+import com.myproject.dbdemotodolist.Controller.MVCMainActivityController;
+import com.myproject.dbdemotodolist.DataManipulationActivity;
 import com.myproject.dbdemotodolist.Model.MVCModelImplementor;
 import com.myproject.dbdemotodolist.Model.Observer;
 import com.myproject.dbdemotodolist.Model.bean.ToDo;
@@ -18,13 +20,13 @@ import com.myproject.dbdemotodolist.R;
 
 import java.util.List;
 
-public class MainActivityViewImplementor implements IMainActivityView, Observer {
+public class MainActivityViewImplementor implements IMVCMainActivityView, Observer {
 
     // This rootView Holds reference to mainActivity layout ie. R.layout.main_activity
     View rootView;
 
     // This mvcController Holds reference to mvcController class.
-    MVCController mvcController;
+    MVCMainActivityController mvcController;
 
     // This mvcModel holds model
     private MVCModelImplementor mvcModel;
@@ -37,7 +39,7 @@ public class MainActivityViewImplementor implements IMainActivityView, Observer 
         rootView = LayoutInflater.from(context).inflate(R.layout.activity_main, viewGroup);
         mvcModel = new MVCModelImplementor(MyApplication.getToDoListDBAdapter());
 //        mvcModel.registerObserver(this);
-        mvcController = new MVCController(mvcModel, this);
+        mvcController = new MVCMainActivityController(mvcModel, this);
     }
 
     @Override
@@ -79,6 +81,13 @@ public class MainActivityViewImplementor implements IMainActivityView, Observer 
     }
 
     @Override
+    public void navigateToDataManipulationActivity(long id) {
+        Intent intent = new Intent(rootView.getContext(), DataManipulationActivity.class);
+        intent.putExtra("todoId", id);
+        rootView.getContext().startActivity(intent);
+    }
+
+    @Override
     public View getRootView() {
         return rootView;
     }
@@ -93,7 +102,7 @@ public class MainActivityViewImplementor implements IMainActivityView, Observer 
     @Override
     public void initViews() {
 
-        editTextNewToDo = (EditText) rootView.findViewById(R.id.editTextNewToDo);
+        editTextNewToDoString = (EditText) rootView.findViewById(R.id.editTextNewToDoString);
         editTextPlace = (EditText) rootView.findViewById(R.id.editTextPlace);
         editTextToDoId = (EditText) rootView.findViewById(R.id.editTextToDoId);
         editTextNewToDo = (EditText) rootView.findViewById(R.id.editTextNewToDo);
@@ -105,16 +114,16 @@ public class MainActivityViewImplementor implements IMainActivityView, Observer 
         buttonModifyToDo = (Button) rootView.findViewById(R.id.buttonModifyToDo);
 
         buttonAddToDo.setOnClickListener(view -> {
-            mvcController.onAddButtonClicked(editTextToDoId.getText().toString(), editTextNewToDo.getText().toString());
+            mvcController.onAddButtonClicked(editTextNewToDoString.getText().toString(), editTextPlace.getText().toString());
         });
 
-        buttonRemoveToDo.setOnClickListener(view -> {
-            mvcController.onRemoveBottomClicked(Integer.parseInt(editTextToDoId.getText().toString()));
-        });
-
-        buttonModifyToDo.setOnClickListener(view -> {
-            mvcController.onModifyButtonClicked(Integer.parseInt(editTextToDoId.getText().toString()), editTextNewToDo.getText().toString());
-        });
+//        buttonRemoveToDo.setOnClickListener(view -> {
+//            mvcController.onRemoveBottomClicked(Integer.parseInt(editTextToDoId.getText().toString()));
+//        });
+//
+//        buttonModifyToDo.setOnClickListener(view -> {
+//            mvcController.onModifyButtonClicked(Integer.parseInt(editTextToDoId.getText().toString()), editTextNewToDo.getText().toString());
+//        });
     }
 
     @Override
